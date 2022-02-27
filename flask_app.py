@@ -1,5 +1,6 @@
-
 # A very simple Flask Hello World app for you to get started with...
+
+from datetime import datetime
 
 from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
@@ -59,7 +60,7 @@ class Comment(db.Model):
 def index():
 
     if request.method == "GET":
-        return render_template("main_page.html", comments=Comment.query.all())
+        return render_template("main_page.html", comments=Comment.query.all(), timestamp=datetime.now())
 
     if not current_user.is_authenticated:
         return redirect(url_for("index"))
