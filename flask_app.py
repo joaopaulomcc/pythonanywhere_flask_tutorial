@@ -6,7 +6,7 @@ from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import login_user, LoginManager, UserMixin, login_required, logout_user, current_user
 from flask_migrate import Migrate
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -54,6 +54,8 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(4096))
     posted = db.Column(db.DateTime, default=datetime.now)
+    commenter_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+    commenter = db.relationship("User", foreign_keys=commenter_id)
 
 
 @app.route('/', methods=("GET", "POST"))
@@ -65,7 +67,7 @@ def index():
     if not current_user.is_authenticated:
         return redirect(url_for("index"))
 
-    comment = Comment(content=request.form["contents"])
+    comment = Comment(content=request.form["contents"], commenter=current_user)
     db.session.add(comment)
     db.session.commit()
 
