@@ -5,6 +5,7 @@ from datetime import datetime
 from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import login_user, LoginManager, UserMixin, login_required, logout_user, current_user
+from flask_migrate import Migrate
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
@@ -23,6 +24,7 @@ app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
